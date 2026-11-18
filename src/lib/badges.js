@@ -103,9 +103,6 @@ export function initials(name) {
   return (first + last).toUpperCase()
 }
 
-export function verificationCode(badge) {
-  return `BRD-${badge.id.toUpperCase()}-${badge.earnedAt.replaceAll('-', '')}`
-}
 
 /* ---------- Chuyển tiêu chí <-> dòng chữ trong form sửa ----------
  * "Rửa chén | 8"                     → cộng dồn đủ 8 lần

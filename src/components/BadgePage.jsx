@@ -5,13 +5,13 @@ import { badgePhoto, counterStatus, getIssuer, isCounter, progress, seriesOf } f
 import BadgeImage from './BadgeImage.jsx'
 import NavBar from './NavBar.jsx'
 import Footer from './Footer.jsx'
-import { BackIcon, CheckIcon, ShieldIcon, TaskIcon } from './icons.jsx'
+import { BackIcon, CheckIcon, TaskIcon } from './icons.jsx'
 
 /** Trang chi tiết huy hiệu (giống trang badge của Credly). */
 export default function BadgePage({
   data, badge, isAdmin, navProps,
   onBack, onToggle, onAddCount, onRemoveCount, onNewTerm, onOpenBadge,
-  onEdit, onDelete, onVerify, onShare,
+  onEdit, onDelete, onShare,
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const tier = getTier(badge.tier)
@@ -32,7 +32,6 @@ export default function BadgePage({
         <div className="bbody">
           <h1>{badge.name}</h1>
           <div className="issuedby">Cấp bởi <a>{issuer.name}</a></div>
-          {earned && <div className="verified"><ShieldIcon /> Đã xác minh</div>}
         </div>
 
         <div className="ibox">
@@ -41,8 +40,7 @@ export default function BadgePage({
               <p>Huy hiệu này được cấp cho <b>{recipient}</b> vào {formatLong(badge.earnedAt)}</p>
               <div className="sub">Hết hạn: Không bao giờ (trừ khi Vk Hơm dỗi)</div>
               <div className="btns">
-                <button className="b pri" onClick={onVerify}>Xác minh</button>
-                <button className="b" onClick={onShare}>Chia sẻ</button>
+                <button className="b pri" onClick={onShare}>Chia sẻ</button>
               </div>
             </>
           ) : (

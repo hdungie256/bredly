@@ -13,7 +13,6 @@ import Footer from './components/Footer.jsx'
 import LoginModal from './components/LoginModal.jsx'
 import AdminMenu from './components/AdminMenu.jsx'
 import BadgeEditor from './components/BadgeEditor.jsx'
-import VerifyModal from './components/VerifyModal.jsx'
 import Celebration from './components/Celebration.jsx'
 
 const SAVE_ERRORS = {
@@ -30,7 +29,7 @@ export default function App() {
 
   const [tab, setTab] = useState('earned')
   const [tier, setTier] = useState('all')
-  // modal: null | 'login' | 'menu' | 'verify' | { edit: badgeId | null }
+  // modal: null | 'login' | 'menu' | { edit: badgeId | null }
   const [modal, setModal] = useState(null)
   const [celebrating, setCelebrating] = useState([]) // id huy hiệu vừa mở khoá, lần lượt chúc mừng
 
@@ -122,7 +121,6 @@ export default function App() {
           onOpenBadge={route.open}
           onEdit={() => setModal({ edit: badge.id })}
           onDelete={deleteBadge}
-          onVerify={() => setModal('verify')}
           onShare={share}
         />
       )}
@@ -150,9 +148,6 @@ export default function App() {
           onSave={saveBadge}
           onClose={() => setModal(null)}
         />
-      )}
-      {modal === 'verify' && badge?.earnedAt && (
-        <VerifyModal badge={badge} issuer={getIssuer(data, badge)} recipient={data.profile.name} onClose={() => setModal(null)} />
       )}
 
       {celebratedBadge && (
