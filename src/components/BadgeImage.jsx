@@ -1,54 +1,77 @@
 import { useId } from 'react'
-import { getTier } from '../constants/tiers.js'
+import { BADGE_ACCENT, getTier } from '../constants/tiers.js'
 
-// Lục giác ngoài và viền chấm bên trong (viewBox 200×210)
-const HEX = 'M100 10 L184 58 L184 152 L100 200 L16 152 L16 58 Z'
-const HEX_INNER = 'M100 24 L171 65 L171 145 L100 186 L29 145 L29 65 Z'
-const FONT = "'Baloo 2', sans-serif"
+// Lục giác đỉnh nhọn, viewBox 200×220
+const HEX = 'M100 8 L186 58 L186 162 L100 212 L14 162 L14 58 Z'
+const FONT = "Inter, 'Helvetica Neue', Arial, sans-serif"
 
-/** Hình huy hiệu: lục giác màu theo cấp độ, ảnh Vk Hơm ở giữa, ruy băng tên. */
+/** Chia tên dài thành 2 dòng cho vừa khung. */
+function splitName(name) {
+  if (name.length <= 14) return [name]
+  const words = name.split(' ')
+  let best = [name]
+  let bestDiff = Infinity
+  for (let i = 1; i < words.length; i++) {
+    const a = words.slice(0, i).join(' ')
+    const b = words.slice(i).join(' ')
+    const diff = Math.abs(a.length - b.length)
+    if (diff < bestDiff) { bestDiff = diff; best = [a, b] }
+  }
+  return best
+}
+
+const Heart = ({ x, y, s = 1, fill }) => (
+  <path
+    transform={`translate(${x} ${y}) scale(${s})`}
+    d="M0 6 C-5.5 2-7.5-0.6-7.5-3.2 a3.9 3.9 0 0 1 7.5-1.4 a3.9 3.9 0 0 1 7.5 1.4 C7.5-0.6 5.5 2 0 6z"
+    fill={fill}
+  />
+)
+
+/** Hình huy hiệu: lục giác gradient theo cấp, "bubu certified", ảnh, tên, cấp độ. */
 export function BadgeArt({ badge, photo }) {
   const tier = getTier(badge.tier)
   const uid = useId().replace(/:/g, '')
-  const gradientId = `grad${uid}`
-  const clipId = `clip${uid}`
-  const fontSize = Math.min(16, Math.floor(235 / Math.max(badge.name.length, 8)))
+  const grad = `g${uid}`
+  const clip = `c${uid}`
+  const lines = splitName(badge.name)
 
   return (
-    <svg viewBox="0 0 200 210" fontFamily={FONT}>
+    <svg viewBox="0 0 200 220" fontFamily={FONT}>
       <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={tier.light} />
-          <stop offset="1" stopColor={tier.main} />
+        <linearGradient id={grad} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={tier.from} />
+          <stop offset="1" stopColor={tier.to} />
         </linearGradient>
-        <clipPath id={clipId}><circle cx="100" cy="92" r="38" /></clipPath>
+        <clipPath id={clip}><circle cx="100" cy="86" r="23.5" /></clipPath>
       </defs>
 
-      <path d={HEX} fill={`url(#${gradientId})`} stroke={`url(#${gradientId})`} strokeWidth="14" strokeLinejoin="round" />
-      <path d={HEX_INNER} fill="none" stroke="#fff" strokeOpacity=".6" strokeWidth="2.2" strokeLinejoin="round" strokeDasharray="1 5" strokeLinecap="round" />
-      <text x="100" y="44" textAnchor="middle" fontSize="10" fontWeight="800" letterSpacing="1.6" fill="#fff">bubu certified</text>
-      <Sparkles />
+      <path d={HEX} fill={`url(#${grad})`} stroke={tier.border} strokeWidth="8" strokeLinejoin="round" />
 
-      <circle cx="100" cy="92" r="43" fill="#fff" />
+      {/* bubu ♥ certified */}
+      <text x="93" y="41" textAnchor="middle" fontSize="19" fontWeight="700" fill="#fff" letterSpacing="-.3">bubu</text>
+      <Heart x={126} y={33} s={0.95} fill={BADGE_ACCENT} />
+      <text x="100" y="55" textAnchor="middle" fontSize="13" fontWeight="400" fill="#fff">certified</text>
+
+      {/* Ảnh */}
+      <circle cx="100" cy="86" r="26" fill="#fff" />
       {photo ? (
-        <image href={photo} x="58" y="50" width="84" height="84" clipPath={`url(#${clipId})`} preserveAspectRatio="xMidYMid slice" />
+        <image href={photo} x="76.5" y="62.5" width="47" height="47" clipPath={`url(#${clip})`} preserveAspectRatio="xMidYMid slice" />
       ) : (
-        <PlaceholderFace clipId={clipId} />
+        <PlaceholderFace clipId={clip} />
       )}
-      <circle cx="100" cy="92" r="38" fill="none" stroke={tier.light} strokeWidth="2" />
 
-      {/* Ruy băng tên */}
-      <path d="M10 136 L36 136 L36 162 L10 162 L19 149Z" fill={tier.dark} />
-      <path d="M190 136 L164 136 L164 162 L190 162 L181 149Z" fill={tier.dark} />
-      <rect x="24" y="130" width="152" height="28" rx="6" fill="#fff" />
-      <text x="100" y={149 + (fontSize - 14) / 3} textAnchor="middle" fontSize={fontSize} fontWeight="800" fill={tier.dark}>
-        {badge.name}
-      </text>
+      <line x1="44" y1="120" x2="156" y2="120" stroke="#fff" strokeOpacity=".75" strokeWidth="1" />
+      {lines.map((line, i) => (
+        <text key={i} x="100" y={(lines.length === 1 ? 147 : 138) + i * 16} textAnchor="middle" fontSize={lines.length === 1 ? 15 : 14} fontWeight="800" fill="#fff">
+          {line}
+        </text>
+      ))}
+      <line x1="56" y1="164" x2="144" y2="164" stroke="#fff" strokeOpacity=".75" strokeWidth="1" />
 
-      <text x="100" y="178" textAnchor="middle" fontSize="9.5" fontWeight="800" letterSpacing="1.8" fill="#fff">
+      <text x="100" y="180" textAnchor="middle" fontSize="8.6" fontWeight="800" letterSpacing="1.4" fill="#fff">
         {tier.label.toUpperCase()}
       </text>
-      <text x="100" y="192" textAnchor="middle" fontSize="9" fill="#fff" opacity=".9">♥</text>
     </svg>
   )
 }
@@ -57,16 +80,17 @@ export function BadgeArt({ badge, photo }) {
 export function LockedArt({ badge }) {
   const tier = getTier(badge.tier)
   return (
-    <svg viewBox="0 0 200 210" fontFamily={FONT}>
-      <path d={HEX} fill="#EBEBEB" stroke="#EBEBEB" strokeWidth="14" strokeLinejoin="round" />
-      <path d={HEX_INNER} fill="none" stroke="#fff" strokeWidth="2.2" strokeLinejoin="round" strokeDasharray="1 5" strokeLinecap="round" />
-      <text x="100" y="44" textAnchor="middle" fontSize="10" fontWeight="800" letterSpacing="1.6" fill="#B5B5B5">bubu certified</text>
-      <circle cx="100" cy="100" r="40" fill="#fff" />
-      <path d="M86 96 v-10 a14 14 0 0 1 28 0 v10" fill="none" stroke="#A8A8A8" strokeWidth="7" strokeLinecap="round" />
-      <rect x="78" y="94" width="44" height="34" rx="8" fill="#A8A8A8" />
-      <circle cx="100" cy="108" r="4.5" fill="#fff" />
-      <rect x="98" y="110" width="4" height="9" rx="2" fill="#fff" />
-      <text x="100" y="168" textAnchor="middle" fontSize="9.5" fontWeight="800" letterSpacing="1.8" fill={tier.main} opacity=".8">
+    <svg viewBox="0 0 200 220" fontFamily={FONT}>
+      <path d={HEX} fill="#E6E9ED" stroke="#D3D8DE" strokeWidth="8" strokeLinejoin="round" />
+      <text x="93" y="41" textAnchor="middle" fontSize="19" fontWeight="700" fill="#AEB6C0" letterSpacing="-.3">bubu</text>
+      <Heart x={126} y={33} s={0.95} fill="#C3CAD2" />
+      <text x="100" y="55" textAnchor="middle" fontSize="13" fill="#AEB6C0">certified</text>
+      <circle cx="100" cy="110" r="30" fill="#fff" />
+      <path d="M89 108 v-8 a11 11 0 0 1 22 0 v8" fill="none" stroke="#A9B1BB" strokeWidth="5.5" strokeLinecap="round" />
+      <rect x="83" y="106" width="34" height="26" rx="6" fill="#A9B1BB" />
+      <circle cx="100" cy="117" r="3.6" fill="#fff" />
+      <rect x="98.4" y="118" width="3.2" height="7" rx="1.6" fill="#fff" />
+      <text x="100" y="180" textAnchor="middle" fontSize="8.6" fontWeight="800" letterSpacing="1.4" fill={tier.to} opacity=".55">
         {tier.label.toUpperCase()}
       </text>
     </svg>
@@ -82,29 +106,19 @@ export default function BadgeImage({ badge, photo, className = 'bimg' }) {
   )
 }
 
-function Sparkles() {
-  return (
-    <g fill="#fff">
-      <path d="M44 82 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" opacity=".85" />
-      <path d="M156 76 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" opacity=".85" />
-      <path d="M152 104 c0-3 4-3 4 0 c0-3 4-3 4 0 c0 3-4 5-4 6 c0-1-4-3-4-6z" opacity=".8" />
-    </g>
-  )
-}
-
 /** Mặt cười tạm thời khi chưa có ảnh. */
 function PlaceholderFace({ clipId }) {
   return (
     <g clipPath={`url(#${clipId})`}>
-      <rect x="58" y="50" width="84" height="84" fill="#FFE6EE" />
-      <path d="M62 92 Q64 52 100 52 Q136 52 138 92 Q130 70 100 68 Q72 70 62 92Z" fill="#5B3A4A" />
-      <ellipse cx="88" cy="95" rx="3.6" ry="4.6" fill="#3A2533" />
-      <ellipse cx="112" cy="95" rx="3.6" ry="4.6" fill="#3A2533" />
-      <circle cx="89.3" cy="93.4" r="1.3" fill="#fff" />
-      <circle cx="113.3" cy="93.4" r="1.3" fill="#fff" />
-      <ellipse cx="80" cy="105" rx="6" ry="3.6" fill="#FF8FB1" opacity=".7" />
-      <ellipse cx="120" cy="105" rx="6" ry="3.6" fill="#FF8FB1" opacity=".7" />
-      <path d="M94 106 Q100 112 106 106" stroke="#3A2533" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <rect x="70" y="56" width="60" height="60" fill="#FFE6EE" />
+      <g transform="translate(100 86) scale(0.8) translate(-100 -86)">
+        <path d="M72 86 Q73 57 100 57 Q127 57 128 86 Q122 69 100 68 Q78 69 72 86Z" fill="#5B3A4A" />
+        <ellipse cx="91" cy="89" rx="2.8" ry="3.5" fill="#3A2533" />
+        <ellipse cx="109" cy="89" rx="2.8" ry="3.5" fill="#3A2533" />
+        <ellipse cx="85" cy="97" rx="4.5" ry="2.7" fill="#FF8FB1" opacity=".7" />
+        <ellipse cx="115" cy="97" rx="4.5" ry="2.7" fill="#FF8FB1" opacity=".7" />
+        <path d="M95.5 98 Q100 102.5 104.5 98" stroke="#3A2533" strokeWidth="2" fill="none" strokeLinecap="round" />
+      </g>
     </g>
   )
 }

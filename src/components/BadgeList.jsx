@@ -1,5 +1,5 @@
 import { TIERS, TIER_ORDER } from '../constants/tiers.js'
-import { getIssuer, isEarned, progress } from '../lib/badges.js'
+import { badgePhoto, getIssuer, isEarned, progress } from '../lib/badges.js'
 import BadgeImage from './BadgeImage.jsx'
 
 const TABS = [
@@ -18,7 +18,7 @@ export default function BadgeList({ data, tab, onTab, tier, onTier, onOpen }) {
     .sort((a, b) =>
       tab === 'earned'
         ? b.earnedAt.localeCompare(a.earnedAt)
-        : progress(b).percent - progress(a).percent,
+        : progress(data, b).percent - progress(data, a).percent,
     )
 
   return (
@@ -44,7 +44,7 @@ export default function BadgeList({ data, tab, onTab, tier, onTier, onOpen }) {
       {list.length ? (
         <div className="grid">
           {list.map((b) => (
-            <BadgeTile key={b.id} badge={b} issuer={getIssuer(data, b)} photo={data.profile.photo} onOpen={onOpen} />
+            <BadgeTile key={b.id} data={data} badge={b} onOpen={onOpen} />
           ))}
         </div>
       ) : (
@@ -58,8 +58,10 @@ export default function BadgeList({ data, tab, onTab, tier, onTier, onOpen }) {
   )
 }
 
-function BadgeTile({ badge, issuer, photo, onOpen }) {
-  const p = progress(badge)
+function BadgeTile({ data, badge, onOpen }) {
+  const p = progress(data, badge)
+  const issuer = getIssuer(data, badge)
+  const photo = badgePhoto(data, badge)
   return (
     <button className="bi" onClick={() => onOpen(badge.id)}>
       <BadgeImage badge={badge} photo={photo} />

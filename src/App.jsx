@@ -3,7 +3,7 @@ import { useAdmin } from './hooks/useAdmin.js'
 import { useBadgeRoute } from './hooks/useBadgeRoute.js'
 import { useBadgeStore } from './hooks/useBadgeStore.js'
 import { useToast } from './hooks/useToast.jsx'
-import { getIssuer } from './lib/badges.js'
+import { badgePhoto, getIssuer } from './lib/badges.js'
 import { today } from './lib/date.js'
 import NavBar from './components/NavBar.jsx'
 import ProfileHeader from './components/ProfileHeader.jsx'
@@ -19,6 +19,7 @@ import Celebration from './components/Celebration.jsx'
 const SAVE_ERRORS = {
   auth: 'Không có quyền lưu, cần cấu hình lại',
   conflict: 'Dữ liệu vừa bị sửa ở nơi khác, tải lại trang rồi thử lại',
+  dev: 'Đang chạy thử trên máy nên không lưu lên GitHub',
 }
 
 export default function App() {
@@ -31,7 +32,7 @@ export default function App() {
   const [tier, setTier] = useState('all')
   // modal: null | 'login' | 'menu' | 'verify' | { edit: badgeId | null }
   const [modal, setModal] = useState(null)
-  const [celebrating, setCelebrating] = useState(null)
+  const [celebrating, setCelebrating] = useState([]) // id huy hiệu vừa mở khoá, lần lượt chúc mừng
 
   if (store.status !== 'ready') {
     return (
@@ -52,10 +53,7 @@ export default function App() {
     onMenu: () => setModal('menu'),
   }
 
-  function toggleRequirement(index) {
-    const unlocked = store.toggleRequirement(badge.id, index, today())
-    if (unlocked) setCelebrating(badge.id)
-  }
+  const celebrate = (ids) => ids.length && setCelebrating((q) => [...q, ...ids])
 
   function saveBadge(form) {
     const id = store.upsertBadge(modal.edit, form)
@@ -96,7 +94,7 @@ export default function App() {
     }
   }
 
-  const celebratedBadge = data.badges.find((b) => b.id === celebrating)
+  const celebratedBadge = data.badges.find((b) => b.id === celebrating[0])
 
   const showSaveBar = admin.isAdmin && store.dirty
 
@@ -104,7 +102,7 @@ export default function App() {
     <div className={showSaveBar ? 'has-savebar' : ''}>
       <div className="wrap">
         <NavBar {...navProps} />
-        <ProfileHeader profile={data.profile} badges={data.badges} />
+        <ProfileHeader data={data} />
         <BadgeList data={data} tab={tab} onTab={setTab} tier={tier} onTier={setTier} onOpen={route.open} />
         <Footer />
       </div>
@@ -117,7 +115,11 @@ export default function App() {
           isAdmin={admin.isAdmin}
           navProps={navProps}
           onBack={route.close}
-          onToggle={toggleRequirement}
+          onToggle={(i) => celebrate(store.toggleRequirement(badge.id, i, today()))}
+          onAddCount={(key) => celebrate(store.addCount(key, today()))}
+          onRemoveCount={store.removeCount}
+          onNewTerm={(key) => { store.startNewTerm(key, today()); notify('Đã bắt đầu học kì mới') }}
+          onOpenBadge={route.open}
           onEdit={() => setModal({ edit: badge.id })}
           onDelete={deleteBadge}
           onVerify={() => setModal('verify')}
@@ -143,8 +145,8 @@ export default function App() {
       )}
       {modal?.edit !== undefined && (
         <BadgeEditor
+          data={data}
           badge={data.badges.find((b) => b.id === modal.edit) ?? null}
-          issuers={data.issuers}
           onSave={saveBadge}
           onClose={() => setModal(null)}
         />
@@ -158,8 +160,8 @@ export default function App() {
           badge={celebratedBadge}
           issuer={getIssuer(data, celebratedBadge)}
           recipient={data.profile.name}
-          photo={data.profile.photo}
-          onClose={() => setCelebrating(null)}
+          photo={badgePhoto(data, celebratedBadge)}
+          onClose={() => setCelebrating((q) => q.slice(1))}
         />
       )}
     </div>

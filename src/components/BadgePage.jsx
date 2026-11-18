@@ -1,20 +1,25 @@
 import { useState } from 'react'
 import { getTier } from '../constants/tiers.js'
 import { formatLong, formatShort } from '../lib/date.js'
-import { getIssuer, progress } from '../lib/badges.js'
+import { badgePhoto, counterStatus, getIssuer, isCounter, progress, seriesOf } from '../lib/badges.js'
 import BadgeImage from './BadgeImage.jsx'
 import NavBar from './NavBar.jsx'
 import Footer from './Footer.jsx'
 import { BackIcon, CheckIcon, ShieldIcon, TaskIcon } from './icons.jsx'
 
 /** Trang chi tiết huy hiệu (giống trang badge của Credly). */
-export default function BadgePage({ data, badge, isAdmin, onBack, onToggle, onEdit, onDelete, onVerify, onShare, navProps }) {
+export default function BadgePage({
+  data, badge, isAdmin, navProps,
+  onBack, onToggle, onAddCount, onRemoveCount, onNewTerm, onOpenBadge,
+  onEdit, onDelete, onVerify, onShare,
+}) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const tier = getTier(badge.tier)
   const issuer = getIssuer(data, badge)
   const recipient = data.profile.name
   const earned = Boolean(badge.earnedAt)
-  const p = progress(badge)
+  const p = progress(data, badge)
+  const series = seriesOf(data, badge)
 
   return (
     <div className="sheet">
@@ -22,7 +27,7 @@ export default function BadgePage({ data, badge, isAdmin, onBack, onToggle, onEd
         <NavBar {...navProps} />
         <button className="crumb" onClick={onBack}><BackIcon /> Quay lại hồ sơ của {recipient}</button>
 
-        <div className="bhero"><BadgeImage badge={badge} photo={data.profile.photo} /></div>
+        <div className="bhero"><BadgeImage badge={badge} photo={badgePhoto(data, badge)} /></div>
 
         <div className="bbody">
           <h1>{badge.name}</h1>
@@ -56,7 +61,7 @@ export default function BadgePage({ data, badge, isAdmin, onBack, onToggle, onEd
           <h2>Mô tả</h2>
           <p className="desc">
             Người sở hữu huy hiệu <b>Bubu Certified: {badge.name} – {tier.label}</b> đã chứng minh năng lực vượt trội
-            trong lĩnh vực này dưới sự giám sát gắt gao của {issuer.name}. Cấp độ {tier.label} ({tier.sub}).
+            trong lĩnh vực này dưới sự giám sát gắt gao của {issuer.name}. Cấp độ {tier.label}.
           </p>
         </section>
 
@@ -69,10 +74,35 @@ export default function BadgePage({ data, badge, isAdmin, onBack, onToggle, onEd
 
         <section className="blk">
           <h2>Tiêu chí đạt được</h2>
-          {badge.reqs.map((req, i) => (
-            <Criterion key={i} req={req} editable={isAdmin} onToggle={() => onToggle(i)} />
-          ))}
+          {badge.reqs.map((req, i) =>
+            isCounter(req) ? (
+              <CounterCriterion
+                key={i}
+                data={data}
+                req={req}
+                editable={isAdmin}
+                onAdd={() => onAddCount(req.tracker)}
+                onRemove={() => onRemoveCount(req.tracker)}
+              />
+            ) : (
+              <Criterion key={i} req={req} editable={isAdmin} onToggle={() => onToggle(i)} />
+            ),
+          )}
         </section>
+
+        {series.length > 1 && (
+          <section className="blk">
+            <h2>Các cấp độ trong chuỗi</h2>
+            <div className="series">
+              {series.map((b) => (
+                <button key={b.id} className={`sitem${b.id === badge.id ? ' on' : ''}`} onClick={() => b.id !== badge.id && onOpenBadge(b.id)}>
+                  <BadgeImage badge={b} photo={badgePhoto(data, b)} />
+                  <span>{getTier(b.tier).label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {isAdmin && (
           <section className="blk">
@@ -92,6 +122,7 @@ export default function BadgePage({ data, badge, isAdmin, onBack, onToggle, onEd
   )
 }
 
+/** Tiêu chí tick một lần. */
 function Criterion({ req, editable, onToggle }) {
   const Tag = editable ? 'button' : 'div'
   return (
@@ -102,5 +133,45 @@ function Criterion({ req, editable, onToggle }) {
         {req.done && <span className="cdt">Hoàn thành {formatShort(req.done)}</span>}
       </span>
     </Tag>
+  )
+}
+
+/**
+ * Tiêu chí đếm số lần, hiện thành N ô tick (vd: 8 lần = 8 ô).
+ * Vk Hơm bấm ô trống để +1 (ngày hôm nay), bấm ô vừa tick gần nhất để bỏ.
+ */
+function CounterCriterion({ data, req, editable, onAdd, onRemove }) {
+  const s = counterStatus(data, req)
+  const filled = s.done ? s.target : Math.min(s.thisPeriod, s.target)
+  const dates = s.tracker.period ? [] : [...(s.tracker.log ?? [])].sort()
+
+  return (
+    <div className="counter-group">
+      <div className="cg-head">
+        <span>{req.t}</span>
+        <b>{filled}/{s.target}</b>
+      </div>
+      {Array.from({ length: s.target }, (_, i) => {
+        const done = i < filled
+        const isLast = i === filled - 1
+        const isNext = i === filled
+        const tappable = editable && (isNext || isLast)
+        const Tag = editable ? 'button' : 'div'
+        return (
+          <Tag
+            key={i}
+            className={`crit${done ? ' done' : ''}${tappable ? ' tap' : ''}`}
+            onClick={tappable ? (isNext ? onAdd : onRemove) : undefined}
+          >
+            <span className="cico">{done ? <CheckIcon /> : <TaskIcon />}</span>
+            <span className="ctx">
+              {req.t} · lần {i + 1}
+              {done && dates[i] && <span className="cdt">Hoàn thành {formatShort(dates[i])}</span>}
+              {editable && isNext && <span className="chint">Bấm để tick hôm nay</span>}
+            </span>
+          </Tag>
+        )
+      })}
+    </div>
   )
 }

@@ -1,11 +1,12 @@
 import { initials, progress } from '../lib/badges.js'
 import { PinIcon } from './icons.jsx'
 
-export default function ProfileHeader({ profile, badges }) {
+export default function ProfileHeader({ data }) {
+  const { profile, badges } = data
   const earned = badges.filter((b) => b.earnedAt).length
   const totals = badges.reduce(
     (acc, b) => {
-      const p = progress(b)
+      const p = progress(data, b)
       return { done: acc.done + p.done, total: acc.total + p.total }
     },
     { done: 0, total: 0 },

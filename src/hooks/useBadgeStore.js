@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { loadData, saveData } from '../lib/github.js'
-import { syncEarned } from '../lib/badges.js'
+import { lineToReq, syncAll, syncEarned } from '../lib/badges.js'
 
 /** Toàn bộ dữ liệu huy hiệu + các thao tác sửa. Sửa xong phải gọi save() mới lên GitHub. */
 export function useBadgeStore(auth) {
@@ -36,17 +36,38 @@ export function useBadgeStore(auth) {
 
   const findIn = (d, id) => d.badges.find((b) => b.id === id)
 
-  /** Tick/bỏ tick một tiêu chí. Trả về true nếu huy hiệu vừa được mở khoá. */
+  /** Tick/bỏ tick một tiêu chí thường. Trả về id các huy hiệu vừa mở khoá. */
   const toggleRequirement = (badgeId, index, date) =>
     update((d) => {
-      const badge = findIn(d, badgeId)
-      const req = badge.reqs[index]
+      const req = findIn(d, badgeId).reqs[index]
       req.done = req.done ? null : date
-      return syncEarned(badge)
+      return syncAll(d)
+    })
+
+  /** Tiêu chí đếm: +1 lần cho tracker (tính cho mọi cấp độ dùng chung). */
+  const addCount = (trackerKey, date) =>
+    update((d) => {
+      d.trackers[trackerKey].log.push(date)
+      return syncAll(d)
+    })
+
+  /** Tiêu chí đếm: bỏ lần gần nhất (lỡ bấm nhầm). */
+  const removeCount = (trackerKey) =>
+    update((d) => {
+      d.trackers[trackerKey].log.pop()
+      syncAll(d)
+    })
+
+  /** Bắt đầu học kì mới cho tracker theo học kì. */
+  const startNewTerm = (trackerKey, date) =>
+    update((d) => {
+      const tr = d.trackers[trackerKey]
+      tr.terms = [...(tr.terms ?? []).filter((x) => x !== date), date]
+      syncAll(d)
     })
 
   /** Tạo mới (badgeId rỗng) hoặc sửa huy hiệu. Trả về id. */
-  const upsertBadge = (badgeId, { name, tier, issuer, newIssuer, lines }) =>
+  const upsertBadge = (badgeId, { name, tier, issuer, newIssuer, lines, photo }) =>
     update((d) => {
       let issuerKey = issuer
       if (newIssuer) {
@@ -59,9 +80,14 @@ export function useBadgeStore(auth) {
         d.badges.push(badge)
       }
       const old = badge.reqs
-      badge.reqs = lines.map((t) => ({ t, done: old.find((r) => r.t === t)?.done ?? null }))
+      badge.reqs = lines.map((line) => lineToReq(d, line, old))
       Object.assign(badge, { name, tier, issuer: issuerKey })
-      syncEarned(badge)
+      if (photo) {
+        // Ảnh dùng chung cho mọi cấp độ trong chuỗi
+        if (badge.series) d.seriesPhotos = { ...d.seriesPhotos, [badge.series]: photo }
+        else badge.photo = photo
+      }
+      syncEarned(d, badge)
       return badge.id
     })
 
@@ -81,5 +107,5 @@ export function useBadgeStore(auth) {
     }
   }
 
-  return { data, status, dirty, saving, toggleRequirement, upsertBadge, deleteBadge, updateProfile, save }
+  return { data, status, dirty, saving, toggleRequirement, addCount, removeCount, startNewTerm, upsertBadge, deleteBadge, updateProfile, save }
 }

@@ -33,6 +33,11 @@ async function getFile(auth) {
 
 /** Tải dữ liệu mới nhất. Lỗi API thì lấy bản raw (có thể trễ vài phút). */
 export async function loadData(auth) {
+  // Chạy thử trên máy (npm run dev): đọc data.json trong thư mục, không đụng GitHub
+  if (import.meta.env.DEV) {
+    const res = await fetch(`${import.meta.env.BASE_URL}data.json?t=${Date.now()}`)
+    return res.json()
+  }
   try {
     const file = await getFile(auth)
     if (file.content) return JSON.parse(fromBase64(file.content))
@@ -46,6 +51,7 @@ export async function loadData(auth) {
 
 /** Ghi data.json thành một commit mới trên GitHub. */
 export async function saveData(data, auth) {
+  if (import.meta.env.DEV) throw new SaveError('dev')
   if (!auth) throw new SaveError('auth')
   const { sha } = await getFile(auth)
   const res = await fetch(CONTENTS_URL, {
