@@ -1,0 +1,480 @@
+{
+ "profile": {
+  "name": "Bubu Húi",
+  "avatar": null,
+  "photo": null
+ },
+ "issuers": {
+  "doi": {
+   "emoji": "🍜",
+   "name": "Vk Hơm Đói Bụng",
+   "skills": [
+    "Ẩm thực",
+    "Chiều vk",
+    "Giao hàng"
+   ]
+  },
+  "amap": {
+   "emoji": "🤗",
+   "name": "Vk Hơm Ấm Áp",
+   "skills": [
+    "Ôm ấp",
+    "Sưởi ấm",
+    "Kiên trì"
+   ]
+  },
+  "songao": {
+   "emoji": "📸",
+   "name": "Vk Hơm Sống Ảo",
+   "skills": [
+    "Nhiếp ảnh",
+    "Sống ảo",
+    "Nhẫn nại"
+   ]
+  },
+  "dieuda": {
+   "emoji": "💅",
+   "name": "Vk Hơm Điệu Đà",
+   "skills": [
+    "Kiên nhẫn",
+    "Khen ngợi",
+    "Shopping"
+   ]
+  },
+  "nhieuchuyen": {
+   "emoji": "🗣️",
+   "name": "Vk Hơm Nhiều Chuyện",
+   "skills": [
+    "Lắng nghe",
+    "Hóng drama",
+    "Đồng cảm"
+   ]
+  },
+  "dangdoi": {
+   "emoji": "😤",
+   "name": "Vk Hơm Đang Dỗi",
+   "skills": [
+    "Đọc vị",
+    "Xin lỗi",
+    "Dỗ dành"
+   ]
+  },
+  "muasam": {
+   "emoji": "🛍️",
+   "name": "Vk Hơm Muốn Mua Sắm",
+   "skills": [
+    "Tài chính",
+    "Hào phóng",
+    "Chi tiền"
+   ]
+  },
+  "nghiemtuc": {
+   "emoji": "💍",
+   "name": "Vk Hơm Nghiêm Túc",
+   "skills": [
+    "Cam kết",
+    "Ngoại giao",
+    "Lãng mạn"
+   ]
+  },
+  "bua": {
+   "emoji": "🤪",
+   "name": "Vk Hơm Bựa",
+   "skills": [
+    "Tàng hình",
+    "Chịu đựng",
+    "Bựa"
+   ]
+  }
+ },
+ "badges": [
+  {
+   "id": "b1",
+   "name": "Shipper Trà Sữa",
+   "tier": "f",
+   "issuer": "doi",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Mua trà sữa cho vk không cần nhắc",
+     "done": null
+    },
+    {
+     "t": "Nhớ đúng size, độ ngọt, topping",
+     "done": null
+    },
+    {
+     "t": "Giao tận nơi lúc vk đang bận",
+     "done": null
+    },
+    {
+     "t": "Không uống ké quá 3 ngụm",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b2",
+   "name": "Kỹ Sư Ôm",
+   "tier": "f",
+   "issuer": "amap",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Ôm chào buổi sáng",
+     "done": null
+    },
+    {
+     "t": "Ôm từ sau lưng bất ngờ",
+     "done": null
+    },
+    {
+     "t": "Ôm lúc vk đang dỗi",
+     "done": null
+    },
+    {
+     "t": "Ôm 5 phút không đòi buông",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b3",
+   "name": "Máy Sưởi Di Động",
+   "tier": "f",
+   "issuer": "amap",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Để vk áp chân lạnh mà không giật mình",
+     "done": null
+    },
+    {
+     "t": "Cho vk thò tay vào áo sưởi ấm",
+     "done": null
+    },
+    {
+     "t": "Nhường hết chăn cho vk",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b4",
+   "name": "Thùng Rác Thức Ăn",
+   "tier": "f",
+   "issuer": "doi",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Ăn hết phần vk bỏ dở",
+     "done": null
+    },
+    {
+     "t": "Ăn món vk nấu hỏng mà vẫn khen",
+     "done": null
+    },
+    {
+     "t": "Ăn rau mùi, hành giúp vk",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b5",
+   "name": "Thợ Ảnh Sống Ảo",
+   "tier": "a",
+   "issuer": "songao",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Chụp góc thấp cho chân dài",
+     "done": null
+    },
+    {
+     "t": "Chụp 50 tấm không than",
+     "done": null
+    },
+    {
+     "t": "Có ít nhất 1 tấm vk đăng được",
+     "done": null
+    },
+    {
+     "t": "Tự biết bật flash, chỉnh sáng",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b6",
+   "name": "Máy Nghe Drama",
+   "tier": "a",
+   "issuer": "nhieuchuyen",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Nghe vk kể 1 tiếng không ngắt lời",
+     "done": null
+    },
+    {
+     "t": "Nhớ tên hết nhân vật trong drama",
+     "done": null
+    },
+    {
+     "t": "Chửi đúng phe với vk",
+     "done": null
+    },
+    {
+     "t": "Không nói \"kệ người ta đi\"",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b7",
+   "name": "Kiên Nhẫn Cấp Phật",
+   "tier": "a",
+   "issuer": "dieuda",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Đợi vk makeup 1 tiếng",
+     "done": null
+    },
+    {
+     "t": "Đợi vk thay 5 bộ đồ",
+     "done": null
+    },
+    {
+     "t": "Đi shopping 3 tiếng không kêu mỏi chân",
+     "done": null
+    },
+    {
+     "t": "Khen bộ nào cũng đẹp mà nghe thật lòng",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b8",
+   "name": "Gối Ôm Biết Thở",
+   "tier": "a",
+   "issuer": "amap",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Cho vk gối tay đến khi tê",
+     "done": null
+    },
+    {
+     "t": "Không ngáy (hoặc ngáy nhỏ)",
+     "done": null
+    },
+    {
+     "t": "Không cướp chăn giữa đêm",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b9",
+   "name": "Người Mẫu Bất Đắc Dĩ",
+   "tier": "a",
+   "issuer": "songao",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Để vk sơn móng tay",
+     "done": null
+    },
+    {
+     "t": "Đắp mặt nạ chung với vk",
+     "done": null
+    },
+    {
+     "t": "Đóng vai phụ trong video TikTok của vk",
+     "done": null
+    },
+    {
+     "t": "Để vk trang điểm cho",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b10",
+   "name": "Đầu Bếp Tình Yêu",
+   "tier": "p",
+   "issuer": "doi",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Tự nấu một bữa ra hồn",
+     "done": null
+    },
+    {
+     "t": "Đi chợ không gọi hỏi quá 3 lần",
+     "done": null
+    },
+    {
+     "t": "Rửa bát luôn sau khi nấu",
+     "done": null
+    },
+    {
+     "t": "Vk ăn hết, không kêu dở",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b11",
+   "name": "Thánh Đoán Ý",
+   "tier": "p",
+   "issuer": "dangdoi",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Đoán đúng \"ăn gì cũng được\" là ăn gì",
+     "done": null
+    },
+    {
+     "t": "Biết \"không sao đâu\" nghĩa là có sao",
+     "done": null
+    },
+    {
+     "t": "Nhận ra vk đổi kiểu tóc, màu son",
+     "done": null
+    },
+    {
+     "t": "Biết vk dỗi mà không cần hỏi",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b12",
+   "name": "Vua Xin Lỗi",
+   "tier": "p",
+   "issuer": "dangdoi",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Xin lỗi trước dù không biết mình sai gì",
+     "done": null
+    },
+    {
+     "t": "Dỗ vk hết giận trong vòng 1 ngày",
+     "done": null
+    },
+    {
+     "t": "Nói \"vk đúng\" khi vk sai rành rành",
+     "done": null
+    },
+    {
+     "t": "Không nhắc lại chuyện cũ",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b13",
+   "name": "Ví Tiền Biết Đi",
+   "tier": "p",
+   "issuer": "muasam",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Bao trọn một buổi date",
+     "done": null
+    },
+    {
+     "t": "Tặng quà không cần dịp gì",
+     "done": null
+    },
+    {
+     "t": "Mua món vk chỉ nhắc 1 lần",
+     "done": null
+    },
+    {
+     "t": "Không kêu đắt",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b14",
+   "name": "Bảo Hành 1 Năm",
+   "tier": "s",
+   "issuer": "nghiemtuc",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Yêu vk tròn 1 năm",
+     "done": null
+    },
+    {
+     "t": "Nhớ ngày kỷ niệm không cần nhắc",
+     "done": null
+    },
+    {
+     "t": "Có quà kỷ niệm",
+     "done": null
+    },
+    {
+     "t": "Viết thư tay cho vk",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b15",
+   "name": "Gặp Phụ Huynh",
+   "tier": "s",
+   "issuer": "nghiemtuc",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Ra mắt bố mẹ vk",
+     "done": null
+    },
+    {
+     "t": "Được mẹ vk khen",
+     "done": null
+    },
+    {
+     "t": "Ăn hết đồ mẹ vk gắp",
+     "done": null
+    },
+    {
+     "t": "Được mời quay lại lần sau",
+     "done": null
+    }
+   ]
+  },
+  {
+   "id": "b16",
+   "name": "Ninja Bựa",
+   "tier": "s",
+   "issuer": "bua",
+   "earnedAt": null,
+   "reqs": [
+    {
+     "t": "Xì hơi cạnh vk mà vk không phát hiện",
+     "done": null
+    },
+    {
+     "t": "Bị vk cắn, véo không kêu",
+     "done": null
+    },
+    {
+     "t": "Chiều vk trọn kỳ \"đến tháng\" không bị mắng",
+     "done": null
+    },
+    {
+     "t": "Đi WC lâu không bị hỏi han",
+     "done": null
+    }
+   ]
+  }
+ ]
+}
